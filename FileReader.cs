@@ -134,7 +134,7 @@ namespace FileManager
         /// <returns>Указатель кодировки, определённой по строке имени</returns>
         public static Encoding DetectEncoding(string encoding_name)
         {
-            switch (encoding_name.ToLower())
+            switch (encoding_name?.ToLower())
             {
                 case "utf8":
                     return Encoding.UTF8;
