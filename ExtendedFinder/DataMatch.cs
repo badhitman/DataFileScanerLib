@@ -6,17 +6,23 @@ using System.Linq;
 
 namespace DataFileScanerLib.ExtendedFinder
 {
+    /// <summary>
+    /// Поисковый юнит
+    /// </summary>
     public class DataMatch
     {
-        public enum MatchResult
+        /// <summary>
+        /// Типы/статусы совпадений
+        /// </summary>
+        public enum MatchesResult
         {
             /// <summary>
-            /// Полное совпадение
+            /// Достигнуто полное совпадение выражения
             /// </summary>
             IsFullMatch,
 
             /// <summary>
-            /// Совпал очередной байт, но полного совпадения ещё нет
+            /// Совпал очередной байт, но полного совпадения не достигнуто
             /// </summary>
             IsMatchThisByte,
 
@@ -46,26 +52,31 @@ namespace DataFileScanerLib.ExtendedFinder
             FindDataLength = FindData.Length;
         }
 
-        public MatchResult MatchNextByte(byte next_byte)
+        public MatchesResult MatchNextByte(byte next_byte)
         {
             if (FindIndexPosition + 1 > FindDataLength)
                 throw new ArgumentOutOfRangeException("Позиция проверки в искомых данных вышла за пределы доступного размера: FindData.Length = " + FindDataLength);
 
             if (!FindData[FindIndexPosition].Contains(next_byte))
             {
-                FindIndexPosition = 0;
-                return MatchResult.IsNotMatchThisByte;
+                if (FindIndexPosition > 0)
+                {
+                    FindIndexPosition = 0;
+                    return MatchNextByte(next_byte);
+                }
+
+                return MatchesResult.IsNotMatchThisByte;
             }
 
             if (FindIndexPosition + 1 == FindDataLength)
             {
                 FindIndexPosition = 0;
-                return MatchResult.IsFullMatch;
+                return MatchesResult.IsFullMatch;
             }
             else
                 FindIndexPosition++;
 
-            return MatchResult.IsMatchThisByte;
+            return MatchesResult.IsMatchThisByte;
         }
 
         /// <summary>
@@ -77,7 +88,7 @@ namespace DataFileScanerLib.ExtendedFinder
                 return false;
 
             DataMatch norm_other = (DataMatch)other;
-           
+
             return this.FindString.ToLower().Equals(norm_other.FindString.ToLower());
         }
 

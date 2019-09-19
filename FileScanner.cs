@@ -31,6 +31,9 @@ namespace DataFileScanerLib
             return result_bytes;
         }
 
+        /// <summary>
+        /// Поиск вхождения одной одной из строки (по списку)
+        /// </summary>
         public ResultScanning FindExtendData(DataExtendFinder dataExtendFinder, long StartPosition)
         {
             if (StartPosition >= Length)

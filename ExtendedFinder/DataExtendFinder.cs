@@ -8,6 +8,9 @@ using static DataFileScanerLib.ExtendedFinder.DataMatch;
 
 namespace DataFileScanerLib.ExtendedFinder
 {
+    /// <summary>
+    /// Поисковый менеджер
+    /// </summary>
     public class DataExtendFinder
     {
         public List<DataMatch> DataMatches = new List<DataMatch>();
@@ -63,7 +66,7 @@ namespace DataFileScanerLib.ExtendedFinder
             int p_min_data_length = MaxSizeFindedData;
             foreach (DataMatch m in DataMatches)
             {
-                if (m.MatchNextByte(next_read_byte) == MatchResult.IsFullMatch)
+                if (m.MatchNextByte(next_read_byte) == MatchesResult.IsFullMatch)
                 {
                     DataMatches.ForEach(x => x.FindIndexPosition = 0); // сброс всех указателей в очереди сравнения
                     result.MatchData = m;
