@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////
 using System.IO;
 
-namespace FileManager
+namespace DataFileScanerLib
 {
     public class FileSplitAndJoin : FileWriter
     {
@@ -80,7 +80,7 @@ namespace FileManager
 
                 operative_dimension_group++;
             }
-            
+
             CopyData(start_position_copy_data, Length, Path.Combine(destination_folder, tmpl_new_file_names + part_file.ToString()));
         }
     }

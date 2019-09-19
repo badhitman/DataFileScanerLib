@@ -4,10 +4,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DataFileScanerLib.ExtendedFinder;
 
-namespace FileManager
+namespace DataFileScanerLib
 {
-    public class FileScaner : FileReader
+    public class FileScanner : FileReader
     {
         /// <summary>
         /// Преобразовать строку в шаблон данных для поиска
@@ -30,16 +31,39 @@ namespace FileManager
             return result_bytes;
         }
 
-        public static byte[][] HexToByte(string s)
+        public ResultScanning FindExtendData(DataExtendFinder dataExtendFinder, long StartPosition)
         {
-            byte[] original_bytes = s.Split('-').Select(b => Convert.ToByte(b, 16)).ToArray();
-            byte[][] search_data = new byte[original_bytes.Length][];
-            int original_bytes_length = original_bytes.Length;
+            if (StartPosition >= Length)
+                return null;
 
-            for (int i = 0; i < original_bytes_length; i++)
-                search_data[i] = new byte[] { original_bytes[i] };
+            // Запоминаем позицию курсора в файле, что бы потом вернуть его на место
+            long original_position_of_stream = Position;
 
-            return search_data;
+            // Сохраняем значение в отдельную переменную, чтобы не обращаться к ней в цикле
+            long file_length = Length;
+
+
+            ResultScanning resultScanning = null;
+            long WorkingReadPosition = Position = StartPosition;
+
+            int dataSearchLength = dataExtendFinder.MinDataLength;
+            while (WorkingReadPosition <= file_length)
+            {
+                resultScanning = dataExtendFinder.ScanningNextByte((byte)FileReadStream.ReadByte());
+                if (resultScanning.IsMatch)
+                {
+                    resultScanning.IndexOf = WorkingReadPosition + 1 - resultScanning.MatchData.FindDataLength;
+                    Position = original_position_of_stream;
+                    return resultScanning;
+                }
+                WorkingReadPosition++;
+                if (WorkingReadPosition + dataExtendFinder.MinDataLength >= file_length)
+                    break;
+            }
+
+            // возвращаем позицию курсосра в файле на исходную позицию
+            Position = original_position_of_stream;
+            return resultScanning;
         }
 
         #region FindDataAll by byte[][] or string
@@ -104,6 +128,10 @@ namespace FileManager
                 }
 
                 WorkingReadPosition++;
+                // если дальнейший сдвиг невозможен из за длины искомых данных.
+                // Если в файле осталось для чтения данных меньше чем искомые данные, то они уже не смогут совпасть
+                if (WorkingReadPosition + dataSearchLength >= file_length)
+                    break;
             }
 
             // возвращаем позицию курсосра в файле на исходную позицию

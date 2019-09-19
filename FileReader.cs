@@ -4,9 +4,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
-namespace FileManager
+namespace DataFileScanerLib
 {
     /// <summary>
     /// Направление чтение файла. Лево (к началу), право (к концу)
@@ -25,6 +26,18 @@ namespace FileManager
 
         public static string BytesToHEX(byte[] bytes) => BitConverter.ToString(bytes);
         public static string StringToHEX(string original_string) => BytesToHEX(EncodingMode.GetBytes(original_string));
+
+        public static byte[][] HexToByte(string s)
+        {
+            byte[] original_bytes = s.Split('-').Select(b => Convert.ToByte(b, 16)).ToArray();
+            byte[][] search_data = new byte[original_bytes.Length][];
+            int original_bytes_length = original_bytes.Length;
+
+            for (int i = 0; i < original_bytes_length; i++)
+                search_data[i] = new byte[] { original_bytes[i] };
+
+            return search_data;
+        }
 
         #region read data in files
         /// <summary>

@@ -3,9 +3,9 @@
 ////////////////////////////////////////////////
 using System.IO;
 
-namespace FileManager
+namespace DataFileScanerLib
 {
-    public class FileWriter : FileScaner
+    public class FileWriter : FileScanner
     {
         #region Событие, возникающее по мере выполнения процесса извлечения данных из файла
         public delegate void ProgressValueChangedHandler(int percentage);
