@@ -9,7 +9,7 @@ using static DataFileScanerLib.ExtendedFinder.DataMatch;
 namespace DataFileScanerLib.ExtendedFinder
 {
     /// <summary>
-    /// Поисковый менеджер
+    /// Поисковый менеджер по списку искомых строк
     /// </summary>
     public class DataExtendFinder
     {
@@ -32,6 +32,11 @@ namespace DataFileScanerLib.ExtendedFinder
         //
         public int MaxSizeFindedData => DataMatches.Max(x => x.FindDataLength);
 
+        /// <summary>
+        /// Добавить искомое выражение
+        /// </summary>
+        /// <param name="find_string">Искомая строка</param>
+        /// <param name="ignore_case">Режим регистрозависимости</param>
         public DataMatch AddFindData(string find_string, bool ignore_case)
         {
             ////////////////////////////////////////
@@ -42,10 +47,9 @@ namespace DataFileScanerLib.ExtendedFinder
             DataMatch dataMatch = new DataMatch(find_string, ignore_case);
 
             ////////////////////////////////////////
-            // нельзя одинаковые строки добавлять
+            // нельзя одинаковые строки добавлять. строки сравниваются без учёта регистра
             if (DataMatches.Contains(dataMatch))
                 return null;
-
 
             DataMatches.Add(dataMatch);
 

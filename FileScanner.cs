@@ -1,7 +1,6 @@
 ﻿////////////////////////////////////////////////
 // © https://github.com/badhitman 
 ////////////////////////////////////////////////
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using DataFileScanerLib.ExtendedFinder;
@@ -49,7 +48,7 @@ namespace DataFileScanerLib
             ResultScanning resultScanning = null;
             long WorkingReadPosition = Position = StartPosition;
 
-            int dataSearchLength = dataExtendFinder.MinDataLength;
+            //int dataSearchLength = dataExtendFinder.MinDataLength;
             while (WorkingReadPosition <= file_length)
             {
                 resultScanning = dataExtendFinder.ScanningNextByte((byte)FileReadStream.ReadByte());
@@ -74,11 +73,9 @@ namespace DataFileScanerLib
         public long[] FindDataAll(byte[][] bytes_search, long StartPosition)
         {
             List<long> indexes = new List<long>();
-
-            long index_match = -1;
             while (true)
             {
-                index_match = FindData(bytes_search, StartPosition);
+                long index_match = FindData(bytes_search, StartPosition);
                 if (index_match < 0)
                     break;
                 else

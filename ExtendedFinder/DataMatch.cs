@@ -80,7 +80,7 @@ namespace DataFileScanerLib.ExtendedFinder
         }
 
         /// <summary>
-        /// Сравнение объектов. Объекты с пустой стройкой поиска ни когда ни чему не равны
+        /// Сравнение объектов юнитов по поисковой фразе без учёта регистра. сравниваемые значения приводятся к единому регистру
         /// </summary>
         public override bool Equals(object other)
         {
