@@ -5,9 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Resources;
 using System.Text;
 
-namespace DataFileScanerLib
+namespace TextFileScanerLib
 {
     /// <summary>
     /// Направление чтение файла. Лево (к началу), право (к концу)
@@ -17,47 +18,54 @@ namespace DataFileScanerLib
     /// <summary>
     /// Класс работы с файлами. Нарезка, склейка ...
     /// </summary>
-    public class FileReader
+    public class AdapterFileReader
     {
         /// <summary>
         /// Исходный файл
         /// </summary>
-        protected FileStream FileReadStream;
+        public FilteredTextFileReader FileReadStream { get; protected set; }
 
         public static string BytesToHEX(byte[] bytes) => BitConverter.ToString(bytes);
-        public static string StringToHEX(string original_string) => BytesToHEX(EncodingMode.GetBytes(original_string));
+        public static string StringToHEX(string OriginalString) => BytesToHEX(EncodingMode.GetBytes(OriginalString));
 
-        public static byte[][] HexToByte(string s)
+        protected ResourceManager ResourceStringManager { get; private set; }
+
+        public static byte[] HexToByte(string ConvertibleString)
         {
-            byte[] original_bytes = s.Split('-').Select(b => Convert.ToByte(b, 16)).ToArray();
-            byte[][] search_data = new byte[original_bytes.Length][];
-            int original_bytes_length = original_bytes.Length;
+            if (string.IsNullOrEmpty(ConvertibleString))
+                throw new ArgumentNullException(nameof(ConvertibleString));
 
-            for (int i = 0; i < original_bytes_length; i++)
-                search_data[i] = new byte[] { original_bytes[i] };
-
-            return search_data;
+            return ConvertibleString.Split('-').Select(b => Convert.ToByte(b, 16)).ToArray();
         }
 
         #region read data in files
+
+        public string ReadDataAboutPositionAsString(long position, int SizeArea)
+        {
+            List<byte> bytes = new List<byte>(ReadBaseBytes(position - SizeArea, position));
+            bytes.AddRange(ReadBaseBytes(position, position + SizeArea));
+            return EncodingMode.GetString(bytes.ToArray());
+        }
+
+
         /// <summary>
         /// Возвращает массив байт слева и справа от указанной точки указанного размера в байтах
         /// </summary>
         /// <param name="position">Точка от которой читать данные</param>
-        /// <param name="size_area">Желаемый размер данных в каждом из направлений от точки (вначало и в конец)</param>
-        public Dictionary<ReadingDirection, byte[]> ReadDataAboutPosition(long position, int size_area) => new Dictionary<ReadingDirection, byte[]>
+        /// <param name="SizeArea">Желаемый размер данных в каждом из направлений от точки (вначало и в конец)</param>
+        public Dictionary<ReadingDirection, byte[]> ReadDataAboutPosition(long position, int SizeArea) => new Dictionary<ReadingDirection, byte[]>
         {
-            { ReadingDirection.Left, ReadBytes(position - size_area, position) },
-            { ReadingDirection.Rifht, ReadBytes(position, position + size_area) }
+            { ReadingDirection.Left, ReadBaseBytes(position - SizeArea, position) },
+            { ReadingDirection.Rifht, ReadBaseBytes(position, position + SizeArea) }
         };
 
         /// <summary>
-        /// Читает и возвращает массив байт из файла. Если начальная точка больше или равна конечной точки, то возвращается пустой массив байт.
+        /// Читает и возвращает массив байт из файла (без фильтров чтения). Если начальная точка больше или равна конечной точки, то возвращается пустой массив байт.
         /// </summary>
         /// <param name="StartPosition">Начальная точка чтения байт. Если меньше нуля, то читает с начала файла (с позиции 0). Если точка больше размера файла, то возвращается пустой массив байт.</param>
         /// <param name="EndPosition">Конечная точка чтения байт. Если точка больше размера фалйла, то читается до конца файла</param>
         /// <returns>Возвращает массив байт из файла с произвольной точки до произвольной точки</returns>
-        public byte[] ReadBytes(long StartPosition, long EndPosition)
+        public byte[] ReadBaseBytes(long StartPosition, long EndPosition)
         {
             // Запоминаем позицию курсора в файле, что бы потом вернуть его на место
             long current_position_of_stream = Position;
@@ -69,18 +77,21 @@ namespace DataFileScanerLib
                 EndPosition = Length;
 
             if (Length < 1 || StartPosition >= EndPosition)
-                return new byte[] { };
+                return Array.Empty<byte>();
 
             byte[] returned_data = new byte[EndPosition - StartPosition];
 
             Position = StartPosition;
 
+            FileReadStream.DisableFilters = false;
             for (int i = 0; i < returned_data.Length; i++)
                 returned_data[i] = (byte)FileReadStream.ReadByte();
-            //
+            FileReadStream.DisableFilters = true;
+
             Position = current_position_of_stream;
             return returned_data;
         }
+
         #endregion
 
         /// <summary>
@@ -88,7 +99,10 @@ namespace DataFileScanerLib
         /// </summary>
         public long Position
         {
-            get => (FileReadStream is null || !FileReadStream.CanRead) ? -1 : FileReadStream.Position;
+            get
+            {
+                return (FileReadStream is null || !FileReadStream.CanRead) ? -1 : FileReadStream.Position;
+            }
             set
             {
                 if (FileReadStream is null || !FileReadStream.CanRead)
@@ -108,18 +122,16 @@ namespace DataFileScanerLib
         /// </summary>
         public long Length => (FileReadStream is null || !FileReadStream.CanRead) ? -1 : FileReadStream.Length;
 
-
         /// <summary>
         /// Открыть для чтения файл
         /// </summary>
-        /// <param name="path_file">Путь к файлу для чтения/обработки</param>
+        /// <param name="PathFile">Путь к файлу для чтения/обработки</param>
         /// <param name="PreDefBuferSize">Размер буфера чтения</param>
-        public void OpenFile(string path_file)
+        public void OpenFile(string PathFile)
         {
             CloseFile();
             //
-            FileReadStream = new FileStream(path_file, FileMode.Open, FileAccess.Read);
-            FileReadStream.Lock(0, Length);
+            FileReadStream = new FilteredTextFileReader(PathFile, FileMode.Open, FileAccess.Read);
         }
 
         /// <summary>
@@ -130,10 +142,13 @@ namespace DataFileScanerLib
             if (!(FileReadStream is null))
             {
                 FileReadStream.Close();
-                FileReadStream.Dispose();
+
                 FileReadStream = null;
             }
         }
+
+
+        #region Encoding
 
         /// <summary>
         /// Режим кодировки данных
@@ -143,11 +158,11 @@ namespace DataFileScanerLib
         /// <summary>
         /// Определить кодировку по имени
         /// </summary>
-        /// <param name="encoding_name">Имя кодировки</param>
+        /// <param name="EncodingName">Имя кодировки</param>
         /// <returns>Указатель кодировки, определённой по строке имени</returns>
-        public static Encoding DetectEncoding(string encoding_name)
+        public static Encoding DetectEncoding(string EncodingName)
         {
-            switch (encoding_name?.ToLower())
+            switch (EncodingName?.ToLower(System.Globalization.CultureInfo.CurrentCulture))
             {
                 case "utf8":
                     return Encoding.UTF8;
@@ -169,13 +184,15 @@ namespace DataFileScanerLib
         /// <summary>
         /// Установить кодировку работы с файлом. При попытке установить NULL -> установится по умолчанию: Encoding.UTF8
         /// </summary>
-        public void SetEncoding(Encoding encoding = null)
+        public static void SetEncoding(Encoding encoding = null)
         {
             if (encoding is null)
                 EncodingMode = Encoding.UTF8;
             else
                 EncodingMode = encoding;
         }
-        public void SetEncoding(string string_encoding) => SetEncoding(DetectEncoding(string_encoding));
+        public static void SetEncoding(string EncodingName) => SetEncoding(DetectEncoding(EncodingName));
+
+        #endregion
     }
 }

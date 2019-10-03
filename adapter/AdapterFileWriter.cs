@@ -1,11 +1,12 @@
 ﻿////////////////////////////////////////////////
 // © https://github.com/badhitman 
 ////////////////////////////////////////////////
+using System;
 using System.IO;
 
-namespace DataFileScanerLib
+namespace TextFileScanerLib
 {
-    public class FileWriter : FileScanner
+    public class AdapterFileWriter : AdapterFileScanner
     {
         #region Событие, возникающее по мере выполнения процесса извлечения данных из файла
         public delegate void ProgressValueChangedHandler(int percentage);
@@ -17,7 +18,7 @@ namespace DataFileScanerLib
         /// <summary>
         /// Поток файла результата
         /// </summary>
-        protected FileStream FileWriteStream;
+        protected FileStream FileWriteStream { get; set; }
 
         /// <summary>
         /// Копирует часть данных из файла в новый файл с произвольной точки до произвольной точки
@@ -71,6 +72,9 @@ namespace DataFileScanerLib
         /// <param name="fileNameSave">Путь/Имя нового файла, который получиться путём объединения других файлов</param>
         public static void JoinFiles(string[] files, string fileNameSave)
         {
+            if (files is null)
+                throw new ArgumentNullException(nameof(files));
+
             FileStream stream_w = new FileStream(fileNameSave, FileMode.Create);
             BinaryWriter binary_w = new BinaryWriter(stream_w);
             int BuferSize = 1024 * 64;
@@ -81,37 +85,39 @@ namespace DataFileScanerLib
             foreach (string s in files)
             {
                 stream_r = new FileStream(s, FileMode.Open, FileAccess.Read);
-                binary_r = new BinaryReader(stream_r);
-                long startPointRead = 0;
-                long endPointRead = stream_r.Length;
-                int markerFlush = 20;
-                int SizePartData = 0;
-                while (startPointRead < endPointRead)
+                using (binary_r = new BinaryReader(stream_r))
                 {
-                    if (endPointRead - startPointRead > BuferSize)
+                    long startPointRead = 0;
+                    long endPointRead = stream_r.Length;
+                    int markerFlush = 20;
+                    int SizePartData = 0;
+                    while (startPointRead < endPointRead)
                     {
-                        SizePartData = BuferSize;
-                    }
-                    else
-                    {
-                        SizePartData = (int)(endPointRead - startPointRead);
-                    }
-                    byte[] bytesForWrite = new byte[SizePartData];
-                    binary_r.Read(bytesForWrite, 0, SizePartData);
-                    binary_w.Write(bytesForWrite);
+                        if (endPointRead - startPointRead > BuferSize)
+                        {
+                            SizePartData = BuferSize;
+                        }
+                        else
+                        {
+                            SizePartData = (int)(endPointRead - startPointRead);
+                        }
+                        byte[] bytesForWrite = new byte[SizePartData];
+                        binary_r.Read(bytesForWrite, 0, SizePartData);
+                        binary_w.Write(bytesForWrite);
 
-                    markerFlush++;
-                    if (markerFlush >= 200)
-                    {
-                        binary_w.Flush();
-                        stream_w.Flush();
-                        markerFlush = 0;
+                        markerFlush++;
+                        if (markerFlush >= 200)
+                        {
+                            binary_w.Flush();
+                            stream_w.Flush();
+                            markerFlush = 0;
+                        }
+                        startPointRead += SizePartData;
                     }
-                    startPointRead += SizePartData;
+                    binary_w.Flush();
+                    stream_w.Flush();
+                    stream_r.Close();
                 }
-                binary_w.Flush();
-                stream_w.Flush();
-                stream_r.Close();
             }
             binary_w.Close();
             stream_w.Close();
