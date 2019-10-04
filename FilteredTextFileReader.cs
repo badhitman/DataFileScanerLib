@@ -14,9 +14,14 @@ namespace TextFileScanerLib
     public class FilteredTextFileReader : IDisposable
     {
         readonly Stream TextFileStream;
-
+        /// <summary>
+        /// Фильтрующий сканер. Данные, распознанные сканером, пропадут в выходном потоке [ReadByte()] так, какбуд-то их небыло вовсе
+        /// </summary>
         public DataScanner Scanner { get; } = new DataScanner();
 
+        /// <summary>
+        /// Принудительное указание отключить фильтр
+        /// </summary>
         public bool DisableFilters { get; set; } = false;
         public bool CanRead => TextFileStream is null ? false : TextFileStream.CanRead;
         public long Length => TextFileStream is null ? -1 : TextFileStream.Length;

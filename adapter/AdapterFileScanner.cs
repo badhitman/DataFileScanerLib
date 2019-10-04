@@ -10,13 +10,15 @@ namespace TextFileScanerLib
 {
     public class AdapterFileScanner : AdapterFileReader
     {
+        public List<byte> TailBytes { get; private set; } = new List<byte>();
+
         public DataScanner Scanner { get; } = new DataScanner();
 
         private void AddToBuffer(int curr_byte)
         {
             if (curr_byte < 0)
                 return;
-
+            TailBytes.Add((byte)curr_byte);
             Scanner.AddToBuffer((byte)curr_byte);
 
             Scanner.CheckData();
@@ -26,7 +28,7 @@ namespace TextFileScanerLib
         {
             if (Scanner.MinDataLengthBytes == 0)
                 throw new Exception(ResourceStringManager.GetString("ExceptionEnterYourSearchInformation", CultureInfo.CurrentCulture));
-
+            TailBytes.Clear();
             long finded_position = -1;
 
             long original_position_of_stream = Position;
@@ -38,7 +40,7 @@ namespace TextFileScanerLib
 
             while (WorkingReadPosition + Scanner.BufferBytes.Count <= file_length)
             {
-                int this_byte = FileReadStream.ReadByte();
+                int this_byte = FileFilteredReadStream.ReadByte();
                 AddToBuffer(this_byte);
                 if (Scanner.ScanResult != null && Scanner.ScanResult.SuccessMatch)
                 {

@@ -13,12 +13,13 @@ namespace TextFileScanerLib.scan
 {
     public class DataScanner
     {
+        protected ResourceManager ResourceStringManager { get; private set; }
+
         public List<byte> BufferBytes { get; } = new List<byte>();
         public string BufferAsString { get; private set; }
         public ScanResult ScanResult { get; private set; }
         public int MaxDataLengthBytes { get; private set; }
         public int MinDataLengthBytes { get; private set; }
-        protected ResourceManager ResourceStringManager { get; private set; }
 
         #region MatchUnits
         //////////////////////////////////////////////////////////////////////////////////////////
@@ -27,12 +28,17 @@ namespace TextFileScanerLib.scan
         /// <summary>
         /// Список искомых данных
         /// </summary>
-        public List<AbstractMatchUnitCore> MatchUnits { get; } = new List<AbstractMatchUnitCore>();
+        private List<AbstractMatchUnitCore> MatchUnits { get; } = new List<AbstractMatchUnitCore>();
         public int MatchUnitsCount => MatchUnits.Count;
-        //public AbstractMatchUnit[] GetMatchUnits => MatchUnits.ToArray();
+        public AbstractMatchUnitCore[] GetMatchUnits() => MatchUnits.ToArray();
         public void ClearMatchUnits()
         {
             MatchUnits.Clear();
+            BufferBytes.Clear();
+            MaxDataLengthBytes = 0;
+            MinDataLengthBytes = 0;
+            ScanResult = null;
+            BufferAsString = string.Empty;
             ContainsTextSearchUnit = false;
             MatchUnitIsAddeded = false;
         }
@@ -43,13 +49,7 @@ namespace TextFileScanerLib.scan
                 throw new ArgumentNullException(nameof(ThisMatchUnit));
 
             if (ThisMatchUnit is MatchUnitText && !((MatchUnitText)ThisMatchUnit).IgnoreCase)
-            {
-                // TODO: Провести нагрузочное тестирование быстродейтсвия
-                //    MatchUnitText matchUnitText = (MatchUnitText)ThisMatchUnit;
-                //    if (!matchUnitText.IgnoreCase)
-                //        ThisMatchUnit = new MatchUnitBytes(AdapterFileReader.EncodingMode.GetBytes(matchUnitText.SearchExpression));
                 Console.WriteLine(ResourceStringManager.GetString("AlertOverConversionOptimizationSuggestion", CultureInfo.CurrentCulture));
-            }
 
             if (MatchUnits.Contains(ThisMatchUnit))
                 return false;
@@ -110,12 +110,13 @@ namespace TextFileScanerLib.scan
                     }
                     else
                     {
-                        clear_data_list_bytes.AddRange(ScanResult.MatchUnit.GetDetectedSearchData().Take(ScanResult.MatchUnit.IndexOf));
+                        if (ScanResult.MatchUnit.IndexOf > 0)
+                            clear_data_list_bytes.AddRange(BufferBytes.Take(ScanResult.MatchUnit.IndexOf));
 
                         if (ScanResult.MatchUnit.ReplacementData.Count > 0)
                             clear_data_list_bytes.AddRange(ScanResult.MatchUnit.ReplacementData);
 
-                        if (ScanResult.MatchUnit.IndexOf + ScanResult.MatchUnit.ReplacementData.Count < BufferBytes.Count)
+                        if (ScanResult.MatchUnit.IndexOf + ScanResult.MatchUnit.GetDetectedSearchData().Length < BufferBytes.Count)
                             clear_data_list_bytes.AddRange(BufferBytes.Skip(ScanResult.MatchUnit.IndexOf + ScanResult.MatchUnit.ReplacementData.Count));
                     }
 

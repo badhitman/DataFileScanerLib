@@ -21,8 +21,8 @@ namespace TextFileScanerLib
 
             int part_file = 0;
             long StartPosition = 0;
-            long EndPosition = FileReadStream.Length;
-            string tmpl_new_file_names = Path.GetFileName(FileReadStream.Name);
+            long EndPosition = FileFilteredReadStream.Length;
+            string tmpl_new_file_names = Path.GetFileName(FileFilteredReadStream.Name);
             while (StartPosition + size * DimensionGroup < EndPosition)
             {
                 part_file++;
@@ -43,7 +43,7 @@ namespace TextFileScanerLib
             if (DimensionGroup <= 0)
                 DimensionGroup = 1;
 
-            string tmpl_new_file_names = Path.GetFileName(FileReadStream.Name) + ".split.part_";
+            string tmpl_new_file_names = Path.GetFileName(FileFilteredReadStream.Name) + ".split.part_";
 
             if (entry_points[0] > 0)
                 CopyData(0, entry_points[0], tmpl_new_file_names + "0");

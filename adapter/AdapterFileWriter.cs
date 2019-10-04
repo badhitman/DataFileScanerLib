@@ -49,7 +49,7 @@ namespace TextFileScanerLib
             Position = StartPosition;
             while (Position < EndPosition)
             {
-                FileWriteStream.WriteByte((byte)FileReadStream.ReadByte());
+                FileWriteStream.WriteByte((byte)FileFilteredReadStream.ReadByte());
 
                 markerFlush++;
                 if (markerFlush >= 20)

@@ -26,11 +26,21 @@ namespace TextFileScanerLib.scan.matches
             if (BytesForCheck is null)
                 throw new ArgumentNullException(nameof(BytesForCheck));
 
+            IndexOf = -1;
+            if (SearchBytes.Length > BytesForCheck.Length)
+                return;
+
             int[] indexes = BytesForCheck.StartingIndex(SearchBytes).ToArray();
-            if (indexes.Length == 0)
-                IndexOf = -1;
-            else
+            if (indexes.Length > 0)
                 IndexOf = indexes[0];
+        }
+
+        public override bool Equals(object other)
+        {
+            if (!base.Equals(other))
+                return false;
+
+            return ((MatchUnitBytes)other).SearchBytes.SequenceEqual(SearchBytes);
         }
 
         public override byte[] GetDetectedSearchData() => SearchBytes;

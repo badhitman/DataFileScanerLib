@@ -23,7 +23,7 @@ namespace TextFileScanerLib
         /// <summary>
         /// Исходный файл
         /// </summary>
-        public FilteredTextFileReader FileReadStream { get; protected set; }
+        public FilteredTextFileReader FileFilteredReadStream { get; protected set; }
 
         public static string BytesToHEX(byte[] bytes) => BitConverter.ToString(bytes);
         public static string StringToHEX(string OriginalString) => BytesToHEX(EncodingMode.GetBytes(OriginalString));
@@ -83,10 +83,10 @@ namespace TextFileScanerLib
 
             Position = StartPosition;
 
-            FileReadStream.DisableFilters = false;
+            FileFilteredReadStream.DisableFilters = false;
             for (int i = 0; i < returned_data.Length; i++)
-                returned_data[i] = (byte)FileReadStream.ReadByte();
-            FileReadStream.DisableFilters = true;
+                returned_data[i] = (byte)FileFilteredReadStream.ReadByte();
+            FileFilteredReadStream.DisableFilters = true;
 
             Position = current_position_of_stream;
             return returned_data;
@@ -101,26 +101,26 @@ namespace TextFileScanerLib
         {
             get
             {
-                return (FileReadStream is null || !FileReadStream.CanRead) ? -1 : FileReadStream.Position;
+                return (FileFilteredReadStream is null || !FileFilteredReadStream.CanRead) ? -1 : FileFilteredReadStream.Position;
             }
             set
             {
-                if (FileReadStream is null || !FileReadStream.CanRead)
+                if (FileFilteredReadStream is null || !FileFilteredReadStream.CanRead)
                     return;
 
                 if (value < 0)
-                    FileReadStream.Position = 0;
+                    FileFilteredReadStream.Position = 0;
                 else if (value > Length)
-                    FileReadStream.Position = Length;
+                    FileFilteredReadStream.Position = Length;
                 else
-                    FileReadStream.Position = value;
+                    FileFilteredReadStream.Position = value;
             }
         }
 
         /// <summary>
         /// Размер исходного файла
         /// </summary>
-        public long Length => (FileReadStream is null || !FileReadStream.CanRead) ? -1 : FileReadStream.Length;
+        public long Length => (FileFilteredReadStream is null || !FileFilteredReadStream.CanRead) ? -1 : FileFilteredReadStream.Length;
 
         /// <summary>
         /// Открыть для чтения файл
@@ -131,7 +131,7 @@ namespace TextFileScanerLib
         {
             CloseFile();
             //
-            FileReadStream = new FilteredTextFileReader(PathFile, FileMode.Open, FileAccess.Read);
+            FileFilteredReadStream = new FilteredTextFileReader(PathFile, FileMode.Open, FileAccess.Read);
         }
 
         /// <summary>
@@ -139,11 +139,11 @@ namespace TextFileScanerLib
         /// </summary>
         public void CloseFile()
         {
-            if (!(FileReadStream is null))
+            if (!(FileFilteredReadStream is null))
             {
-                FileReadStream.Close();
+                FileFilteredReadStream.Close();
 
-                FileReadStream = null;
+                FileFilteredReadStream = null;
             }
         }
 
