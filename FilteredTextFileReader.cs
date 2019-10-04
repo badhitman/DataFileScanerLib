@@ -7,28 +7,24 @@ using System.IO;
 
 namespace TextFileScanerLib
 {
+    /// <summary>
+    /// Чтение файла через фильтр. Настроив фильтрующий сканер в последствии при чтении из этого файла фильтруемые данные не будут прочитаны (будут пропущены)
+    /// Фильтры могут быть трёх типов: строковой фильтр, фильтр регулярного выражения (regex) или фильтр данных (byte[])
+    /// </summary>
     public class FilteredTextFileReader : IDisposable
     {
         readonly Stream TextFileStream;
 
         public DataScanner Scanner { get; } = new DataScanner();
 
-        //public List<byte> BufferBytes => Scanner.BufferBytes;
-        //private string BufferString { get; set; }
         public bool DisableFilters { get; set; } = false;
         public bool CanRead => TextFileStream is null ? false : TextFileStream.CanRead;
         public long Length => TextFileStream is null ? -1 : TextFileStream.Length;
 
         public long Position
         {
-            get
-            {
-                return TextFileStream is null ? -1 : TextFileStream.Position;
-            }
-            set
-            {
-                TextFileStream.Position = value;
-            }
+            get => TextFileStream.Position;
+            set=> TextFileStream.Position = value;
         }
 
         public string Name => TextFileStream is FileStream ? ((FileStream)TextFileStream).Name : "";
@@ -58,7 +54,6 @@ namespace TextFileScanerLib
             }
 
             Scanner.AddToBuffer(ret_val);
-            //BufferString = FileReader.EncodingMode.GetString(BufferBytes.ToArray());
             while (Scanner.BufferBytes.Count < Scanner.MaxDataLengthBytes)
             {
                 ret_val = TextFileStream.ReadByte();
