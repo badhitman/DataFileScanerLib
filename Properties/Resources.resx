@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AlertOverConversionOptimizationSuggestion" xml:space="preserve">
+    <value>The case-sensitive search string unit should probably be replaced with a bytes unit. This eliminates the need for multiple conversions of strings to bytes and back</value>
+  </data>
   <data name="ExceptionBufferSizeMustBeGreaterThanSero" xml:space="preserve">
     <value>Buffer size must be greater than zero</value>
   </data>

@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AlertOverConversionOptimizationSuggestion" xml:space="preserve">
+    <value>Поисковый string-юнит с учётом регистра вероятно стоит заменить на bytes-юнит. Таким образом отпадает необходимость множественного преобразования строк в байты и обратно</value>
+  </data>
   <data name="ExceptionBufferSizeMustBeGreaterThanSero" xml:space="preserve">
     <value>Размер буфера должен быть больше нуля</value>
   </data>

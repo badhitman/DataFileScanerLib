@@ -42,13 +42,14 @@ namespace TextFileScanerLib.scan
             if (ThisMatchUnit is null)
                 throw new ArgumentNullException(nameof(ThisMatchUnit));
 
-            // TODO: Провести тестирование быстродейтсвия разных методов поиска
-            //if (ThisMatchUnit is MatchUnitText && !((MatchUnitText)ThisMatchUnit).IgnoreCase)
-            //{
-            //    MatchUnitText matchUnitText = (MatchUnitText)ThisMatchUnit;
-            //    if (!matchUnitText.IgnoreCase)
-            //        ThisMatchUnit = new MatchUnitBytes(AdapterFileReader.EncodingMode.GetBytes(matchUnitText.SearchExpression));
-            //}
+            if (ThisMatchUnit is MatchUnitText && !((MatchUnitText)ThisMatchUnit).IgnoreCase)
+            {
+                // TODO: Провести нагрузочное тестирование быстродейтсвия
+                //    MatchUnitText matchUnitText = (MatchUnitText)ThisMatchUnit;
+                //    if (!matchUnitText.IgnoreCase)
+                //        ThisMatchUnit = new MatchUnitBytes(AdapterFileReader.EncodingMode.GetBytes(matchUnitText.SearchExpression));
+                Console.WriteLine(ResourceStringManager.GetString("AlertOverConversionOptimizationSuggestion", CultureInfo.CurrentCulture));
+            }
 
             if (MatchUnits.Contains(ThisMatchUnit))
                 return false;

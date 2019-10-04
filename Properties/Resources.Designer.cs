@@ -61,6 +61,15 @@ namespace TextFileScanerLib.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на The case-sensitive search string unit should probably be replaced with a bytes unit. This eliminates the need for multiple conversions of strings to bytes and back.
+        /// </summary>
+        internal static string AlertOverConversionOptimizationSuggestion {
+            get {
+                return ResourceManager.GetString("AlertOverConversionOptimizationSuggestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Buffer size must be greater than zero.
         /// </summary>
         internal static string ExceptionBufferSizeMustBeGreaterThanSero {
