@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Resources;
 using System.Text;
 
@@ -28,7 +29,7 @@ namespace TextFileScanerLib
         public static string BytesToHEX(byte[] bytes) => BitConverter.ToString(bytes);
         public static string StringToHEX(string OriginalString) => BytesToHEX(EncodingMode.GetBytes(OriginalString));
 
-        protected ResourceManager ResourceStringManager { get; private set; }
+        protected ResourceManager ResourceStringManager { get; private set; } = new ResourceManager("ru-RU", Assembly.GetExecutingAssembly());
 
         public static byte[] HexToByte(string ConvertibleString)
         {

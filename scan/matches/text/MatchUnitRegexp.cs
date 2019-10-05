@@ -22,13 +22,13 @@ namespace TextFileScanerLib.Matches
                 throw new ArgumentNullException(nameof(regex));
 
             if (!regex.Options.HasFlag(RegexOptions.Compiled))
-                throw new ArgumentException(ResourceStringManager.GetString("ExceptionRegularExpressionMustBeCompiled", CultureInfo.CurrentCulture), nameof(regex));
+                throw new ArgumentException("Регулярное выражение должно быть скомпилировано", nameof(regex));
 
             if (SetBufferSize < 1)
-                throw new ArgumentOutOfRangeException(nameof(SetBufferSize), ResourceStringManager.GetString("ExceptionBufferSizeMustBeGreaterThanSero", CultureInfo.CurrentCulture));
+                throw new ArgumentOutOfRangeException(nameof(SetBufferSize), "Размер буфера должен быть больше нуля");
 
             if (string.IsNullOrEmpty(regex.ToString()))
-                throw new ArgumentOutOfRangeException(nameof(regex), ResourceStringManager.GetString("ExceptionMissingSearchData", CultureInfo.CurrentCulture));
+                throw new ArgumentOutOfRangeException(nameof(regex), "Отсутствуют данные поиска");
 
             BufferSize = SetBufferSize;
             SearchRegex = regex;

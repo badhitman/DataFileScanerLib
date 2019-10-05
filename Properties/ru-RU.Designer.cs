@@ -22,14 +22,14 @@ namespace TextFileScanerLib {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class resources {
+    internal class ru_RU {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal resources() {
+        internal ru_RU() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace TextFileScanerLib {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TextFileScanerLib.Properties.resources", typeof(resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TextFileScanerLib.Properties.ru-RU", typeof(ru_RU).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,7 +61,7 @@ namespace TextFileScanerLib {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на The case-sensitive search string unit should probably be replaced with a bytes unit. This eliminates the need for multiple conversions of strings to bytes and back.
+        ///   Ищет локализованную строку, похожую на Поисковый string-юнит с учётом регистра вероятно стоит заменить на bytes-юнит. Таким образом отпадает необходимость множественного преобразования строк в байты и обратно.
         /// </summary>
         internal static string AlertOverConversionOptimizationSuggestion {
             get {
@@ -70,7 +70,7 @@ namespace TextFileScanerLib {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Buffer size must be greater than zero.
+        ///   Ищет локализованную строку, похожую на Размер буфера должен быть больше нуля.
         /// </summary>
         internal static string ExceptionBufferSizeMustBeGreaterThanSero {
             get {
@@ -79,7 +79,7 @@ namespace TextFileScanerLib {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Enter your search information.
+        ///   Ищет локализованную строку, похожую на Укажите данные поиска.
         /// </summary>
         internal static string ExceptionEnterYourSearchInformation {
             get {
@@ -88,7 +88,7 @@ namespace TextFileScanerLib {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на The list of search units cannot be empty.
+        ///   Ищет локализованную строку, похожую на Список поисковых юнитов не может быть пустым.
         /// </summary>
         internal static string ExceptionListOfSearchUnitsCannotBeEmpty {
             get {
@@ -97,7 +97,7 @@ namespace TextFileScanerLib {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Missing search data.
+        ///   Ищет локализованную строку, похожую на Отсутствуют данные поиска.
         /// </summary>
         internal static string ExceptionMissingSearchData {
             get {
@@ -106,7 +106,7 @@ namespace TextFileScanerLib {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на The regular expression must be compiled.
+        ///   Ищет локализованную строку, похожую на Регулярное выражение должно быть скомпилировано.
         /// </summary>
         internal static string ExceptionRegularExpressionMustBeCompiled {
             get {
@@ -115,7 +115,7 @@ namespace TextFileScanerLib {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Search unit type not defined.
+        ///   Ищет локализованную строку, похожую на Тип поискового юнита не определён.
         /// </summary>
         internal static string ExceptionSearchUnitTypeNotDefined {
             get {

@@ -28,6 +28,7 @@ namespace TextFileScanerLib
         {
             if (Scanner.MinDataLengthBytes == 0)
                 throw new Exception(ResourceStringManager.GetString("ExceptionEnterYourSearchInformation", CultureInfo.CurrentCulture));
+
             TailBytes.Clear();
             long finded_position = -1;
 
@@ -38,13 +39,14 @@ namespace TextFileScanerLib
             long WorkingReadPosition = Position = StartPosition;
             Scanner.BufferBytes.Clear();
 
-            while (WorkingReadPosition + Scanner.BufferBytes.Count <= file_length)
+            while (WorkingReadPosition <= file_length)
             {
                 int this_byte = FileFilteredReadStream.ReadByte();
                 AddToBuffer(this_byte);
                 if (Scanner.ScanResult != null && Scanner.ScanResult.SuccessMatch)
                 {
-                    finded_position = Position- Scanner.ScanResult.MatchUnit.GetDetectedSearchData().Length;
+                    Position = Position - Scanner.ScanResult.MatchUnit.GetDetectedSearchData().Length - this.FileFilteredReadStream.Scanner.BufferBytes.Count;
+                    finded_position = Position;
                     break;
                 }
                 WorkingReadPosition++;

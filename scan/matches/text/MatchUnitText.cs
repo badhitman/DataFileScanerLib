@@ -12,7 +12,7 @@ namespace TextFileScanerLib.Matches
         public MatchUnitText(string SearchString, bool SetIgnoreCase, byte[] SetReplacementData = null) : base(SetReplacementData)
         {
             if (string.IsNullOrEmpty(SearchString) || SearchString.Length == 0)
-                throw new ArgumentOutOfRangeException(nameof(SearchString), ResourceStringManager.GetString("ExceptionMissingSearchData", CultureInfo.CurrentCulture));
+                throw new ArgumentOutOfRangeException(nameof(SearchString), "Отсутствуют данные поиска");
 
             SearchExpression = SearchString;
             IgnoreCase = SetIgnoreCase;

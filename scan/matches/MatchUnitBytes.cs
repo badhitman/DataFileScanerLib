@@ -15,7 +15,7 @@ namespace TextFileScanerLib.scan.matches
         public MatchUnitBytes(byte[] SetSearchBytes, byte[] SetReplacementData = null) : base(SetReplacementData)
         {
             if (SetSearchBytes is null || SetSearchBytes.Length == 0)
-                throw new ArgumentNullException(nameof(SetSearchBytes), ResourceStringManager.GetString("ExceptionEnterYourSearchInformation", CultureInfo.CurrentCulture));
+                throw new ArgumentNullException(nameof(SetSearchBytes), "Укажите данные поиска");
 
             SearchBytes = SetSearchBytes;
             BufferSize = SetSearchBytes.Length;

@@ -9,8 +9,6 @@ namespace TextFileScanerLib.Matches
 {
     public abstract class AbstractMatchUnitCore
     {
-        protected ResourceManager ResourceStringManager { get; private set; }
-
         /// <summary>
         /// Результат проверки
         /// </summary>
@@ -31,8 +29,6 @@ namespace TextFileScanerLib.Matches
         {
             if (SetReplacementData != null)
                 ReplacementData = new ReadOnlyCollection<byte>(SetReplacementData);
-
-            ResourceStringManager = new ResourceManager("ru-RU", Assembly.GetExecutingAssembly());
         }
 
         #region сравнение объектов

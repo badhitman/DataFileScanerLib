@@ -6,15 +6,11 @@ using System;
 using System.Collections.Generic;
 using TextFileScanerLib.scan.matches;
 using System.Linq;
-using System.Globalization;
-using System.Resources;
 
 namespace TextFileScanerLib.scan
 {
     public class DataScanner
     {
-        protected ResourceManager ResourceStringManager { get; private set; }
-
         public List<byte> BufferBytes { get; } = new List<byte>();
         public string BufferAsString { get; private set; }
         public ScanResult ScanResult { get; private set; }
@@ -49,7 +45,7 @@ namespace TextFileScanerLib.scan
                 throw new ArgumentNullException(nameof(ThisMatchUnit));
 
             if (ThisMatchUnit is MatchUnitText && !((MatchUnitText)ThisMatchUnit).IgnoreCase)
-                Console.WriteLine(ResourceStringManager.GetString("AlertOverConversionOptimizationSuggestion", CultureInfo.CurrentCulture));
+                Console.WriteLine("Поисковый string-юнит с учётом регистра вероятно стоит заменить на bytes-юнит. Таким образом отпадает необходимость множественного преобразования строк в байты и обратно");
 
             if (MatchUnits.Contains(ThisMatchUnit))
                 return false;
@@ -85,7 +81,7 @@ namespace TextFileScanerLib.scan
             if (NewByte < 0)
                 return;
             if (!MatchUnitIsAddeded)
-                throw new Exception(ResourceStringManager.GetString("ExceptionListOfSearchUnitsCannotBeEmpty", CultureInfo.CurrentCulture));
+                throw new Exception("Список поисковых юнитов не может быть пустым");
 
             BufferBytes.Add((byte)NewByte);
             BufferAsString = ContainsTextSearchUnit ? AdapterFileReader.EncodingMode.GetString(BufferBytes.ToArray()) : string.Empty;
@@ -143,7 +139,7 @@ namespace TextFileScanerLib.scan
                 else if (match_unit is MatchUnitBytes)
                     ((MatchUnitBytes)match_unit).Checking(BufferBytes.ToArray());
                 else
-                    throw new Exception(ResourceStringManager.GetString("ExceptionSearchUnitTypeNotDefined", CultureInfo.CurrentCulture));
+                    throw new Exception("Тип поискового юнита не определён");
 
                 if (match_unit.SuccessMatch)
                 {
