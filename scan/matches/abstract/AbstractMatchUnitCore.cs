@@ -2,8 +2,6 @@
 // © https://github.com/badhitman 
 ////////////////////////////////////////////////
 using System.Collections.ObjectModel;
-using System.Reflection;
-using System.Resources;
 
 namespace TextFileScanerLib.Matches
 {

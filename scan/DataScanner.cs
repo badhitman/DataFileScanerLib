@@ -11,6 +11,7 @@ namespace TextFileScanerLib.scan
 {
     public class DataScanner
     {
+        public long FilteredDataCounter { get; set; }
         public List<byte> BufferBytes { get; } = new List<byte>();
         public string BufferAsString { get; private set; }
         public ScanResult ScanResult { get; private set; }
@@ -33,7 +34,7 @@ namespace TextFileScanerLib.scan
             BufferBytes.Clear();
             MaxDataLengthBytes = 0;
             MinDataLengthBytes = 0;
-            ScanResult = null;
+            ScanResult = new ScanResult();
             BufferAsString = string.Empty;
             ContainsTextSearchUnit = false;
             MatchUnitIsAddeded = false;
@@ -115,7 +116,9 @@ namespace TextFileScanerLib.scan
                         if (ScanResult.MatchUnit.IndexOf + ScanResult.MatchUnit.GetDetectedSearchData().Length < BufferBytes.Count)
                             clear_data_list_bytes.AddRange(BufferBytes.Skip(ScanResult.MatchUnit.IndexOf + ScanResult.MatchUnit.ReplacementData.Count));
                     }
-
+                    int filteredDataCount = BufferBytes.Count - clear_data_list_bytes.Count;
+                    
+                    FilteredDataCounter += filteredDataCount;
                     BufferBytes.Clear();
                     BufferBytes.AddRange(clear_data_list_bytes);
                     BufferAsString = ContainsTextSearchUnit ? AdapterFileReader.EncodingMode.GetString(BufferBytes.ToArray()) : string.Empty;

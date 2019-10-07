@@ -47,7 +47,7 @@ namespace TextFileScanerLib
 
             if (ret_val < 0)
             {
-                if (Scanner.BufferBytes.Count == 0)
+                if (Scanner.BufferBytes.Count == 0)//this.FileFilteredReadStream.Scanner.BufferBytes
                     return ret_val;
                 else
                 {

@@ -4,7 +4,6 @@
 using TextFileScanerLib.scan;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 
 namespace TextFileScanerLib
 {
@@ -27,9 +26,12 @@ namespace TextFileScanerLib
         public long FindPositionData(long StartPosition)
         {
             if (Scanner.MinDataLengthBytes == 0)
-                throw new Exception(ResourceStringManager.GetString("ExceptionEnterYourSearchInformation", CultureInfo.CurrentCulture));
+                throw new Exception("Укажите данные поиска");
 
             TailBytes.Clear();
+            Scanner.BufferBytes.Clear();
+            this.FileFilteredReadStream.Scanner.BufferBytes.Clear();
+
             long finded_position = -1;
 
             long original_position_of_stream = Position;
@@ -37,9 +39,8 @@ namespace TextFileScanerLib
             long file_length = Length;
 
             long WorkingReadPosition = Position = StartPosition;
-            Scanner.BufferBytes.Clear();
 
-            while (WorkingReadPosition <= file_length)
+            while (WorkingReadPosition <= file_length || this.FileFilteredReadStream.Scanner.BufferBytes.Count > 0)
             {
                 int this_byte = FileFilteredReadStream.ReadByte();
                 AddToBuffer(this_byte);
