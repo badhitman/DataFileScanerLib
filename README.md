@@ -1,3 +1,44 @@
 # File-Split-n-Join
-Поиск данных в файле. Нарезка файлов по размеру или по искомой строке.
+Поиск данных в файле.
+Поиск возможен по **byte**-данным, а для текстовых данных можно искать по тексту или регулярному выражению.
+За анализ данных отвечают так называемые поисковые юниты: `MatchUnitBytes`, `MatchUnitText` и `MatchUnitRegexp`
+При помощи поисковых юнитов есть возможность задействовать фильтр на поток чтения данных.
+Таким образом поисковые юниты предварительно из потока будут выщечащть "мусор", а механизм поиска и анализа данных будет использовать уже "модифицированный поток данных".
+Модификации подтвергается не файл, а поток в процессе чтения.
+Фильтр может не только удалять данные на лету, но и заменять их на свои. 
+
+Эта библиотека, например, нашла применение в парсинге логов.
+Юниты в фильтре меняли на лету часто повторяющееся длинное техническое имя сервера на короткое и понятное, а так же удаляли часть технических строковых данных, которые были излишними для дальнейших манипуляций.
+Одна особенность логов asp .net core (by linux), что в каждую строку там дабовляются последовательность символов в качестве маркера статуса сообщения.
+
+Исходные данные:
+```
+Oct  1 06:25:23 765331-vds-sserv333999 dotnet[7307]: #033[40m#033[37mdbug#033[39m#033[22m#033[49m: Microsoft.AspNetCore.Server.Kestrel[1]
+Oct  1 06:25:23 765331-vds-sserv333999 dotnet[7307]:       Connection id "0HLQ6660KEG7O" started.
+Oct  1 06:25:23 765331-vds-sserv333999 dotnet[7307]: #033[40m#033[32minfo#033[39m#033[22m#033[49m: Microsoft.AspNetCore.Hosting.Internal.WebHost[1]
+Oct  1 06:25:23 765331-vds-sserv333999 dotnet[7307]:       Request starting HTTP/1.1 GET http://localhost:5000/ping
+Oct  1 06:25:23 765331-vds-sserv333999 dotnet[7307]: #033[40m#033[32minfo#033[39m#033[22m#033[49m: Microsoft.EntityFrameworkCore.Infrastructure[10403]
+Oct  1 06:25:23 765331-vds-sserv333999 dotnet[7307]:       Entity Framework Core 2.2.6-servicing-10079 initialized 'AppDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer' with options: SensitiveDataLoggingEnabled
+Oct  1 06:25:23 765331-vds-sserv333999 dotnet[7307]: #033[40m#033[37mdbug#033[39m#033[22m#033[49m: Microsoft.EntityFrameworkCore.Database.Connection[20000]
+Oct  1 06:25:23 765331-vds-sserv333999 dotnet[7307]:       Opening connection to database 'electrum-merchant' on server '127.0.0.1'.
+Oct  1 06:25:23 765331-vds-sserv333999 dotnet[7307]: #033[40m#033[37mdbug#033[39m#033[22m#033[49m: Microsoft.EntityFrameworkCore.Database.Connection[20001]
+```
+после фильтра поток принимал такой вид:
+```
+dbug: Microsoft.AspNetCore.Server.Kestrel[1]
+      Connection id "0HLQ6660KEG7O" started.
+minfo: Microsoft.AspNetCore.Hosting.Internal.WebHost[1]
+      Request starting HTTP/1.1 GET http://localhost:5000/ping
+minfo: Microsoft.EntityFrameworkCore.Infrastructure[10403]
+      Entity Framework Core 2.2.6-servicing-10079 initialized 'AppDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer' with options: SensitiveDataLoggingEnabled
+dbug: Microsoft.EntityFrameworkCore.Database.Connection[20000]
+      Opening connection to database 'electrum-merchant' on server '127.0.0.1'.
+dbug: Microsoft.EntityFrameworkCore.Database.Connection[20001]
+```
+далее парсеру остаётся эти данные записать в новое хранилище (базу данных)
+
+Таким образмо, благодаря фильтрам, служба сканирования и парсинга получала поток вдвое меньше по размеру, а потом по символу перевода строки сегментировала файл.
+Учитывая тот факт, что каждый сегмент парсеру требовалось анализировать регулярным выражением, то предварительная очистка данных значительно облегчала задачу.
+К тому же размер конечных стрктурированных (парсером) данных тоже был значительно меньше и читабельнее чем мог бы быть без применения фильтров.
+
 Задействована в [WPF Win App. File-Split-n-Join](https://github.com/badhitman/File-Split-n-Join-WPF)
