@@ -37,7 +37,7 @@ LogFileScanner.FileFilteredReadStream.Scanner.AddMatchUnit(new MatchUnitBytes(Ad
 LogFileScanner.FileFilteredReadStream.Scanner.AddMatchUnit(new MatchUnitBytes(AdapterFileReader.EncodingMode.GetBytes("#033[40m#033[37m"), System.Array.Empty<byte>()));
 LogFileScanner.FileFilteredReadStream.Scanner.AddMatchUnit(new MatchUnitBytes(AdapterFileReader.EncodingMode.GetBytes("#033[40m#033[32m"), System.Array.Empty<byte>()));
 //
-Regex PrefixRegex = new Regex(@"^[^:]+:\s*", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+Regex PrefixRegex = new Regex(@"^[^\]]+\]:\s", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 LogFileScanner.FileFilteredReadStream.Scanner.AddMatchUnit(new MatchUnitRegexp(PrefixRegex, 22, Array.Empty<byte>()));
 ```
 
