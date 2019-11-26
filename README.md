@@ -20,10 +20,29 @@ Oct  1 06:25:23 765331-vds-sserv333999 dotnet[7307]:       Request starting HTTP
 Oct  1 06:25:23 765331-vds-sserv333999 dotnet[7307]: #033[40m#033[32minfo#033[39m#033[22m#033[49m: Microsoft.EntityFrameworkCore.Infrastructure[10403]
 Oct  1 06:25:23 765331-vds-sserv333999 dotnet[7307]:       Entity Framework Core 2.2.6-servicing-10079 initialized 'AppDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer' with options: SensitiveDataLoggingEnabled
 Oct  1 06:25:23 765331-vds-sserv333999 dotnet[7307]: #033[40m#033[37mdbug#033[39m#033[22m#033[49m: Microsoft.EntityFrameworkCore.Database.Connection[20000]
-Oct  1 06:25:23 765331-vds-sserv333999 dotnet[7307]:       Opening connection to database 'electrum-merchant' on server '127.0.0.1'.
+Oct  1 06:25:23 765331-vds-sserv333999 dotnet[7307]:       Opening connection to database 'my-db' on server '127.0.0.1'.
 Oct  1 06:25:23 765331-vds-sserv333999 dotnet[7307]: #033[40m#033[37mdbug#033[39m#033[22m#033[49m: Microsoft.EntityFrameworkCore.Database.Connection[20001]
 ```
-после фильтра поток принимал такой вид:
+Готовим фильтр:
+
+```c#
+AdapterFileScanner LogFileScanner = new AdapterFileScanner();
+LogFileScanner.OpenFile("/var/log/syslog");
+/*
+Следует размещать в начало фильтра именно `MatchUnitBytes` т.к. они самые "быстрые".
+Текстовые (и, тем более, regexp) юниты преобразовывают читаемый поток в строку после каждого прочитаного байта.
+
+*/
+LogFileScanner.FileFilteredReadStream.Scanner.AddMatchUnit(new MatchUnitBytes(AdapterFileReader.EncodingMode.GetBytes("#033[39m#033[22m#033[49m"), System.Array.Empty<byte>()));
+LogFileScanner.FileFilteredReadStream.Scanner.AddMatchUnit(new MatchUnitBytes(AdapterFileReader.EncodingMode.GetBytes("#033[40m#033[1m#033[33m"), System.Array.Empty<byte>()));
+LogFileScanner.FileFilteredReadStream.Scanner.AddMatchUnit(new MatchUnitBytes(AdapterFileReader.EncodingMode.GetBytes("#033[40m#033[37m"), System.Array.Empty<byte>()));
+LogFileScanner.FileFilteredReadStream.Scanner.AddMatchUnit(new MatchUnitBytes(AdapterFileReader.EncodingMode.GetBytes("#033[40m#033[32m"), System.Array.Empty<byte>()));
+//
+Regex PrefixRegex = new Regex(@"^[^:]+:\s*", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+LogFileScanner.FileFilteredReadStream.Scanner.AddMatchUnit(new MatchUnitRegexp(PrefixRegex, 22, Array.Empty<byte>()));
+```
+
+после фильтра поток принял такой вид:
 ```
 dbug: Microsoft.AspNetCore.Server.Kestrel[1]
       Connection id "0HLQ6660KEG7O" started.
@@ -32,12 +51,13 @@ minfo: Microsoft.AspNetCore.Hosting.Internal.WebHost[1]
 minfo: Microsoft.EntityFrameworkCore.Infrastructure[10403]
       Entity Framework Core 2.2.6-servicing-10079 initialized 'AppDbContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer' with options: SensitiveDataLoggingEnabled
 dbug: Microsoft.EntityFrameworkCore.Database.Connection[20000]
-      Opening connection to database 'electrum-merchant' on server '127.0.0.1'.
+      Opening connection to database 'my-db' on server '127.0.0.1'.
 dbug: Microsoft.EntityFrameworkCore.Database.Connection[20001]
 ```
 далее парсеру оставалось эти данные сегментировать и записать в хранилище (например в базу данных)
 
 Таким образмо, благодаря фильтрам, служба сканирования и парсинга получала поток вдвое меньше по размеру и и втрое читабельнее по содержанию.
 
+\
 P.S.
 Данная библитека задействована в [WPF Win App. File-Split-n-Join](https://github.com/badhitman/File-Split-n-Join-WPF)
