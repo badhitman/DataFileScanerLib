@@ -23,15 +23,14 @@ Oct  1 06:25:23 765331-vds-sserv333999 dotnet[7307]: #033[40m#033[37mdbug#033[39
 Oct  1 06:25:23 765331-vds-sserv333999 dotnet[7307]:       Opening connection to database 'my-db' on server '127.0.0.1'.
 Oct  1 06:25:23 765331-vds-sserv333999 dotnet[7307]: #033[40m#033[37mdbug#033[39m#033[22m#033[49m: Microsoft.EntityFrameworkCore.Database.Connection[20001]
 ```
-Готовим фильтр:
 
+Настройка фильтра:
 ```c#
 AdapterFileScanner LogFileScanner = new AdapterFileScanner();
 LogFileScanner.OpenFile("/var/log/syslog");
 /*
-Следует размещать в начало фильтра именно `MatchUnitBytes` т.к. они самые "быстрые".
+Следует размещать в начало фильтра именно `MatchUnitBytes` т.к. они самые "быстрые". Последующим фильтрам тогда не потребуется чекать эти данные
 Текстовые (и, тем более, regexp) юниты преобразовывают читаемый поток в строку после каждого прочитаного байта.
-
 */
 LogFileScanner.FileFilteredReadStream.Scanner.AddMatchUnit(new MatchUnitBytes(AdapterFileReader.EncodingMode.GetBytes("#033[39m#033[22m#033[49m"), System.Array.Empty<byte>()));
 LogFileScanner.FileFilteredReadStream.Scanner.AddMatchUnit(new MatchUnitBytes(AdapterFileReader.EncodingMode.GetBytes("#033[40m#033[1m#033[33m"), System.Array.Empty<byte>()));
