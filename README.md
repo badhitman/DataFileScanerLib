@@ -41,7 +41,7 @@ Regex PrefixRegex = new Regex(@"^[^:]+:\s*", RegexOptions.Compiled | RegexOption
 LogFileScanner.FileFilteredReadStream.Scanner.AddMatchUnit(new MatchUnitRegexp(PrefixRegex, 22, Array.Empty<byte>()));
 ```
 
-после фильтра поток принял такой вид:
+после фильтра поток для сканера/парсера принимал такой вид:
 ```
 dbug: Microsoft.AspNetCore.Server.Kestrel[1]
       Connection id "0HLQ6660KEG7O" started.
