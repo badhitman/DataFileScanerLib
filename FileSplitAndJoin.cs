@@ -1,11 +1,8 @@
 ﻿////////////////////////////////////////////////
 // © https://github.com/badhitman 
 ////////////////////////////////////////////////
-using TextFileScanerLib.Matches;
-using System.Collections.Generic;
 using System.IO;
 using System.Globalization;
-using System;
 
 namespace TextFileScanerLib
 {
