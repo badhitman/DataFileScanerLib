@@ -1,17 +1,23 @@
 ﻿////////////////////////////////////////////////
-// © https://github.com/badhitman 
+// © https://github.com/badhitman - @fakegov 
 ////////////////////////////////////////////////
-using TextFileScanerLib.Matches;
 
-namespace TextFileScanerLib.scan
+using TextFileScannerLib.Matches;
+
+namespace TextFileScannerLib.scan;
+
+/// <summary>
+/// Результат сканирования
+/// </summary>
+public class ScanResult
 {
     /// <summary>
-    /// Результат сканирования
+    /// MatchUnit is not null AND MatchUnit.SuccessMatch
     /// </summary>
-    public class ScanResult
-    {
-        public bool SuccessMatch => MatchUnit is null ? false : MatchUnit.SuccessMatch;
-        
-        public AbstractMatchUnitCore MatchUnit { get; set; }
-    }
+    public bool SuccessMatch => MatchUnit is not null && MatchUnit.SuccessMatch;
+
+    /// <summary>
+    /// MatchUnit
+    /// </summary>
+    public AbstractMatchUnitCore? MatchUnit { get; set; }
 }

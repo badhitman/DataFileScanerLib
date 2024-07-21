@@ -1,52 +1,54 @@
 ﻿////////////////////////////////////////////////
-// © https://github.com/badhitman 
+// © https://github.com/badhitman - @fakegov 
 ////////////////////////////////////////////////
-using System;
+
 using System.Globalization;
-using TextFileScanerLib.Matches;
+using TextFileScannerLib.Matches;
 
-namespace TextFileScanerLib.scan.matches
+namespace TextFileScannerLib.scan.matches;
+
+/// <summary>
+/// AbstractMatchUnitText
+/// </summary>
+public abstract class AbstractMatchUnitText(byte[]? SetReplacementData = null) : AbstractMatchUnitCore(SetReplacementData)
 {
-    public abstract class AbstractMatchUnitText : AbstractMatchUnitCore
+    /// <summary>
+    /// Искомое выражение
+    /// </summary>
+    public required string SearchExpression { get; set; }
+
+    /// <summary>
+    /// Признак регистро-независимости
+    /// </summary>
+    public bool IgnoreCase { get; set; }
+
+    /// <summary>
+    /// Checking
+    /// </summary>
+    public virtual void Checking(string TextForCheck)
     {
-        /// <summary>
-        /// Искомое выражение
-        /// </summary>
-        public string SearchExpression { get; protected set; }
+        IndexOf = -1;
+    }
 
-        /// <summary>
-        /// Признак регистро-независимости
-        /// </summary>
-        public bool IgnoreCase { get; set; }
+    /// <inheritdoc/>
+    public override bool Equals(object? other)
+    {
+        if (!base.Equals(other))
+            return false;
 
-        protected AbstractMatchUnitText(byte[] SetReplacementData = null) : base(SetReplacementData)
-        {
+        //return base.Equals(other);
+        AbstractMatchUnitText norm_other = (AbstractMatchUnitText)other;
 
-        }
+        if (IgnoreCase && norm_other.IgnoreCase)
+            return string.Equals(SearchExpression, norm_other.SearchExpression, StringComparison.CurrentCultureIgnoreCase);
+        else
+            return string.Equals(SearchExpression, norm_other.SearchExpression, StringComparison.CurrentCulture);
 
-        public virtual void Checking(string TextForCheck)
-        {
-            IndexOf = -1;
-        }
+    }
 
-        public override bool Equals(object other)
-        {
-            if (!base.Equals(other))
-                return false;
-
-            //return base.Equals(other);
-            AbstractMatchUnitText norm_other = (AbstractMatchUnitText)other;
-
-            if (IgnoreCase && norm_other.IgnoreCase)
-                return string.Equals(SearchExpression, norm_other.SearchExpression, StringComparison.CurrentCultureIgnoreCase);
-            else
-                return string.Equals(SearchExpression, norm_other.SearchExpression, StringComparison.CurrentCulture);
-
-        }
-
-        public override int GetHashCode()
-        {
-            return (base.GetHashCode().ToString(CultureInfo.InvariantCulture) + SearchExpression + IgnoreCase.ToString(CultureInfo.InvariantCulture)).GetHashCode();
-        }
+    /// <inheritdoc/>
+    public override int GetHashCode()
+    {
+        return (base.GetHashCode().ToString(CultureInfo.InvariantCulture) + SearchExpression + IgnoreCase.ToString(CultureInfo.InvariantCulture)).GetHashCode();
     }
 }

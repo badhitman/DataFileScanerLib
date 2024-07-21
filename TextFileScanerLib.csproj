@@ -1,48 +1,43 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <RootNamespace>TextFileScanerLib</RootNamespace>
-    <NeutralLanguage>en</NeutralLanguage>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<RootNamespace>TextFileScanerLib</RootNamespace>
+		<Nullable>enable</Nullable>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="Properties\resources.resources" />
-    <None Remove="Properties\ru-RU.resources" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Remove="Properties\resources.resources" />
+		<None Remove="Properties\ru-RU.resources" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Include="Properties\resources.resources">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>resources.Designer.cs</LastGenOutput>
-      <CustomToolNamespace>TextFileScanerLib</CustomToolNamespace>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\ru-RU.resources">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>ru-RU.Designer.cs</LastGenOutput>
-      <CustomToolNamespace>TextFileScanerLib</CustomToolNamespace>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-  </ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="Properties\Resources.Resources">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>resources.Designer.cs</LastGenOutput>
+			<CustomToolNamespace>TextFileScanerLib</CustomToolNamespace>
+		</EmbeddedResource>
+		<EmbeddedResource Include="Properties\ru-RU.Resources">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>ru-RU.Designer.cs</LastGenOutput>
+			<CustomToolNamespace>TextFileScanerLib</CustomToolNamespace>
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</EmbeddedResource>
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="6.0.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="Properties\Resources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>resources.resources</DependentUpon>
-    </Compile>
-    <Compile Update="Properties\ru-RU.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>ru-RU.resources</DependentUpon>
-    </Compile>
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Update="Properties\Resources.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Resources.Resources</DependentUpon>
+		</Compile>
+		<Compile Update="Properties\ru-RU.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>ru-RU.Resources</DependentUpon>
+		</Compile>
+	</ItemGroup>
 
 </Project>

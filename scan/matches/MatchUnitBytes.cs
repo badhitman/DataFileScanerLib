@@ -1,48 +1,63 @@
 ﻿////////////////////////////////////////////////
-// © https://github.com/badhitman 
+// © https://github.com/badhitman - @fakegov 
 ////////////////////////////////////////////////
-using System;
-using System.Globalization;
-using System.Linq;
-using TextFileScanerLib.Matches;
 
-namespace TextFileScanerLib.scan.matches
+using TextFileScannerLib.Matches;
+
+namespace TextFileScannerLib.scan.matches;
+
+/// <summary>
+/// Match unit bytes
+/// </summary>
+public class MatchUnitBytes : AbstractMatchUnitCore
 {
-    public class MatchUnitBytes : AbstractMatchUnitCore
+    readonly byte[] SearchBytes;
+
+    /// <summary>
+    /// Match unit bytes
+    /// </summary>
+    public MatchUnitBytes(byte[] setSearchBytes, byte[]? setReplacementData = null) : base(setReplacementData)
     {
-        readonly byte[] SearchBytes;
+        if (setSearchBytes is null || setSearchBytes.Length == 0)
+            throw new ArgumentNullException(nameof(setSearchBytes), "Укажите данные поиска");
 
-        public MatchUnitBytes(byte[] SetSearchBytes, byte[] SetReplacementData = null) : base(SetReplacementData)
-        {
-            if (SetSearchBytes is null || SetSearchBytes.Length == 0)
-                throw new ArgumentNullException(nameof(SetSearchBytes), "Укажите данные поиска");
+        SearchBytes = setSearchBytes;
+        BufferSize = setSearchBytes.Length;
+    }
 
-            SearchBytes = SetSearchBytes;
-            BufferSize = SetSearchBytes.Length;
-        }
+    /// <summary>
+    /// Checking
+    /// </summary>
+    public void Checking(byte[] bytesForCheck)
+    {
+        ArgumentNullException.ThrowIfNull(bytesForCheck);
 
-        public void Checking(byte[] BytesForCheck)
-        {
-            if (BytesForCheck is null)
-                throw new ArgumentNullException(nameof(BytesForCheck));
+        IndexOf = -1;
+        if (SearchBytes.Length > bytesForCheck.Length)
+            return;
 
-            IndexOf = -1;
-            if (SearchBytes.Length > BytesForCheck.Length)
-                return;
+        int[] indexes = bytesForCheck.StartingIndex(SearchBytes).ToArray();
+        if (indexes.Length > 0)
+            IndexOf = indexes[0];
+    }
 
-            int[] indexes = BytesForCheck.StartingIndex(SearchBytes).ToArray();
-            if (indexes.Length > 0)
-                IndexOf = indexes[0];
-        }
+    /// <inheritdoc/>
+    public override bool Equals(object? other)
+    {
+        if (!base.Equals(other))
+            return false;
 
-        public override bool Equals(object other)
-        {
-            if (!base.Equals(other))
-                return false;
+        return ((MatchUnitBytes)other).SearchBytes.SequenceEqual(SearchBytes);
+    }
 
-            return ((MatchUnitBytes)other).SearchBytes.SequenceEqual(SearchBytes);
-        }
+    /// <inheritdoc/>
+    public override byte[] GetDetectedSearchData() => SearchBytes;
 
-        public override byte[] GetDetectedSearchData() => SearchBytes;
+    /// <inheritdoc/>
+    public override int GetHashCode()
+    {
+        HashCode hash = new();
+        hash.AddBytes(SearchBytes);
+        return hash.ToHashCode();
     }
 }
