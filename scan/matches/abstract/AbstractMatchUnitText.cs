@@ -10,7 +10,7 @@ namespace TextFileScannerLib.scan.matches;
 /// <summary>
 /// AbstractMatchUnitText
 /// </summary>
-public abstract class AbstractMatchUnitText(byte[]? SetReplacementData = null) : AbstractMatchUnitCore(SetReplacementData)
+public abstract class AbstractMatchUnitText(byte[]? setReplacementData = null) : AbstractMatchUnitCore(setReplacementData)
 {
     /// <summary>
     /// Искомое выражение
@@ -25,7 +25,7 @@ public abstract class AbstractMatchUnitText(byte[]? SetReplacementData = null) :
     /// <summary>
     /// Checking
     /// </summary>
-    public virtual void Checking(string TextForCheck)
+    public virtual void Checking(string textForCheck)
     {
         IndexOf = -1;
     }

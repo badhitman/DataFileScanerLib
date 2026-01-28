@@ -43,13 +43,10 @@ public class DataScanner
     public int MinDataLengthBytes { get; private set; }
 
     #region MatchUnits
-    //////////////////////////////////////////////////////////////////////////////////////////
-    //
-
     /// <summary>
     /// Список искомых данных
     /// </summary>
-    private List<AbstractMatchUnitCore> MatchUnits { get; } = new List<AbstractMatchUnitCore>();
+    private List<AbstractMatchUnitCore> MatchUnits { get; } = [];
 
     /// <summary>
     /// MatchUnits.Count
@@ -79,23 +76,23 @@ public class DataScanner
     /// <summary>
     /// Add match unit
     /// </summary>
-    public bool AddMatchUnit(AbstractMatchUnitCore ThisMatchUnit)
+    public bool AddMatchUnit(AbstractMatchUnitCore thisMatchUnit)
     {
-        ArgumentNullException.ThrowIfNull(ThisMatchUnit);
+        ArgumentNullException.ThrowIfNull(thisMatchUnit);
 
-        if (ThisMatchUnit is MatchUnitText text && !text.IgnoreCase)
+        if (thisMatchUnit is MatchUnitText text && !text.IgnoreCase)
             Console.WriteLine("Поисковый string-юнит с учётом регистра вероятно стоит заменить на bytes-юнит. Таким образом отпадает необходимость множественного преобразования строк в байты и обратно");
 
-        if (MatchUnits.Contains(ThisMatchUnit))
+        if (MatchUnits.Contains(thisMatchUnit))
             return false;
 
-        MatchUnits.Add(ThisMatchUnit);
+        MatchUnits.Add(thisMatchUnit);
         MatchUnitIsAdded = true;
-        if (ThisMatchUnit.GetType().IsSubclassOf(typeof(AbstractMatchUnitText)))
+        if (thisMatchUnit.GetType().IsSubclassOf(typeof(AbstractMatchUnitText)))
             ContainsTextSearchUnit = true;
 
-        MinDataLengthBytes = MinDataLengthBytes == default ? ThisMatchUnit.BufferSize : Math.Min(ThisMatchUnit.BufferSize, MinDataLengthBytes);
-        MaxDataLengthBytes = Math.Max(ThisMatchUnit.BufferSize, MaxDataLengthBytes);
+        MinDataLengthBytes = MinDataLengthBytes == default ? thisMatchUnit.BufferSize : Math.Min(thisMatchUnit.BufferSize, MinDataLengthBytes);
+        MaxDataLengthBytes = Math.Max(thisMatchUnit.BufferSize, MaxDataLengthBytes);
 
         return true;
     }
@@ -110,9 +107,6 @@ public class DataScanner
         foreach (AbstractMatchUnitCore x in abstractMatchUnitCore)
             AddMatchUnit(x);
     }
-
-    //
-    //////////////////////////////////////////////////////////////////////////////////////////
     #endregion
 
     bool ContainsTextSearchUnit = false;
@@ -194,7 +188,6 @@ public class DataScanner
             if (match_unit.SuccessMatch)
             {
                 ScanResult.MatchUnit = match_unit;
-
                 break;
             }
         }

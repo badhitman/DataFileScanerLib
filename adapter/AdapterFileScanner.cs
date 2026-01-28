@@ -21,7 +21,7 @@ public class AdapterFileScanner : AdapterFileReader
     /// </summary>
     public DataScanner Scanner { get; } = new DataScanner();
 
-    private void AddToBuffer(int curr_byte)
+    void AddToBuffer(int curr_byte)
     {
         if (curr_byte < 0)
             return;

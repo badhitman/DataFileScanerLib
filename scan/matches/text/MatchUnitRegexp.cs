@@ -27,20 +27,20 @@ public class MatchUnitRegexp : AbstractMatchUnitText
     /// <summary>
     /// Match unit regexp
     /// </summary>
-    public MatchUnitRegexp(Regex regex, int SetBufferSize, byte[]? SetReplacementData = null) : base(SetReplacementData)
+    public MatchUnitRegexp(Regex regex, int setBufferSize, byte[]? setReplacementData = null) : base(setReplacementData)
     {
         ArgumentNullException.ThrowIfNull(regex);
 
         if (!regex.Options.HasFlag(RegexOptions.Compiled))
             throw new ArgumentException("Регулярное выражение должно быть скомпилировано", nameof(regex));
 
-        if (SetBufferSize < 1)
-            throw new ArgumentOutOfRangeException(nameof(SetBufferSize), "Размер буфера должен быть больше нуля");
+        if (setBufferSize < 1)
+            throw new ArgumentOutOfRangeException(nameof(setBufferSize), "Размер буфера должен быть больше нуля");
 
         if (string.IsNullOrEmpty(regex.ToString()))
             throw new ArgumentOutOfRangeException(nameof(regex), "Отсутствуют данные поиска");
 
-        BufferSize = SetBufferSize;
+        BufferSize = setBufferSize;
         SearchRegex = regex;
         SearchExpression = regex.ToString();
         IgnoreCase = regex.Options.HasFlag(RegexOptions.IgnoreCase);

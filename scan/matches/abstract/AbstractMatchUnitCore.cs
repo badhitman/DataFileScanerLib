@@ -39,14 +39,13 @@ public abstract class AbstractMatchUnitCore
     /// <summary>
     /// Abstract match unit core
     /// </summary>
-    protected AbstractMatchUnitCore(byte[]? SetReplacementData)
+    protected AbstractMatchUnitCore(byte[]? setReplacementData)
     {
-        if (SetReplacementData != null)
-            ReplacementData = new ReadOnlyCollection<byte>(SetReplacementData);
+        if (setReplacementData != null)
+            ReplacementData = new ReadOnlyCollection<byte>(setReplacementData);
     }
 
     #region сравнение объектов
-
     /// <inheritdoc/>
     public override bool Equals(object? other)
     {
@@ -84,6 +83,5 @@ public abstract class AbstractMatchUnitCore
         //
         return !a1.Equals(a2);
     }
-
     #endregion
 }

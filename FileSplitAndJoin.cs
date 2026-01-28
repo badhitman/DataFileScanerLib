@@ -37,14 +37,14 @@ public class FileSplitAndJoin : AdapterFileWriter
     /// <summary>
     /// Нарезка
     /// </summary>
-    public void SplitFile(string DestinationFolder, int DimensionGroup = 1)
+    public void SplitFile(string destinationFolder, int dimensionGroup = 1)
     {
         long[] entry_points = FindDataAll(0);
         if (entry_points.Length == 0 || (entry_points.Length == 1 && entry_points[0] == 0))
             return;
 
-        if (DimensionGroup <= 0)
-            DimensionGroup = 1;
+        if (dimensionGroup <= 0)
+            dimensionGroup = 1;
 
         string tmpl_new_file_names = Path.GetFileName(FileFilteredReadStream.Name) + ".split.part_";
 
@@ -62,9 +62,9 @@ public class FileSplitAndJoin : AdapterFileWriter
                 start_position_copy_data = start_position_copy_data < 0 ? point : start_position_copy_data;
             }
 
-            if (operative_dimension_group == DimensionGroup)
+            if (operative_dimension_group == dimensionGroup)
             {
-                CopyData(start_position_copy_data, point, Path.Combine(DestinationFolder, tmpl_new_file_names + part_file.ToString(CultureInfo.CurrentCulture)));
+                CopyData(start_position_copy_data, point, Path.Combine(destinationFolder, tmpl_new_file_names + part_file.ToString(CultureInfo.CurrentCulture)));
                 start_position_copy_data = point;
 
                 operative_dimension_group = 0;
@@ -74,6 +74,6 @@ public class FileSplitAndJoin : AdapterFileWriter
             operative_dimension_group++;
         }
 
-        CopyData(start_position_copy_data, Length, Path.Combine(DestinationFolder, tmpl_new_file_names + part_file.ToString(CultureInfo.CurrentCulture)));
+        CopyData(start_position_copy_data, Length, Path.Combine(destinationFolder, tmpl_new_file_names + part_file.ToString(CultureInfo.CurrentCulture)));
     }
 }

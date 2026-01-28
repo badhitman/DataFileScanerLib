@@ -15,27 +15,27 @@ public class MatchUnitText : AbstractMatchUnitText
     /// <summary>
     /// Match unit text
     /// </summary>
-    public MatchUnitText(string SearchString, bool SetIgnoreCase, byte[]? SetReplacementData = null) : base(SetReplacementData)
+    public MatchUnitText(string searchString, bool setIgnoreCase, byte[]? setReplacementData = null) : base(setReplacementData)
     {
-        if (string.IsNullOrEmpty(SearchString) || SearchString.Length == 0)
-            throw new ArgumentOutOfRangeException(nameof(SearchString), "Отсутствуют данные поиска");
+        if (string.IsNullOrEmpty(searchString) || searchString.Length == 0)
+            throw new ArgumentOutOfRangeException(nameof(searchString), "Отсутствуют данные поиска");
 
-        SearchExpression = SearchString;
-        IgnoreCase = SetIgnoreCase;
-        BufferSize = AdapterFileReader.EncodingMode.GetByteCount(SearchString);
+        SearchExpression = searchString;
+        IgnoreCase = setIgnoreCase;
+        BufferSize = AdapterFileReader.EncodingMode.GetByteCount(searchString);
     }
 
     /// <inheritdoc/>
-    public override void Checking(string StringForCheck)
+    public override void Checking(string stringForCheck)
     {
-        ArgumentNullException.ThrowIfNull(StringForCheck);
+        ArgumentNullException.ThrowIfNull(stringForCheck);
 
-        base.Checking(StringForCheck);
+        base.Checking(stringForCheck);
 
         if (IgnoreCase)
-            IndexOf = StringForCheck.ToLower(CultureInfo.CurrentCulture).IndexOf(SearchExpression.ToLower(CultureInfo.CurrentCulture), StringComparison.CurrentCulture);
+            IndexOf = stringForCheck.ToLower(CultureInfo.CurrentCulture).IndexOf(SearchExpression.ToLower(CultureInfo.CurrentCulture), StringComparison.CurrentCulture);
         else
-            IndexOf = StringForCheck.IndexOf(SearchExpression, StringComparison.CurrentCulture);
+            IndexOf = stringForCheck.IndexOf(SearchExpression, StringComparison.CurrentCulture);
 
     }
 
