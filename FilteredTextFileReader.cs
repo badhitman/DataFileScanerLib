@@ -100,9 +100,7 @@ public class FilteredTextFileReader(string path, FileMode mode, FileAccess acces
     /// </summary>
     public void Dispose()
     {
-        TextFileStream.Close();
-        TextFileStream.Dispose();
-
+        Close();
         GC.SuppressFinalize(this);
     }
 }

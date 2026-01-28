@@ -9,7 +9,7 @@ namespace TextFileScannerLib;
 /// <summary>
 /// Класс работы с файлами. Нарезка, склейка ...
 /// </summary>
-public class AdapterFileReader
+public class AdapterFileReader : IDisposable
 {
     /// <summary>
     /// Исходный файл
@@ -141,7 +141,17 @@ public class AdapterFileReader
     public void CloseFile()
     {
         FileFilteredReadStream?.Close();
+        FileFilteredReadStream?.Dispose();
         FileFilteredReadStream = null;
+    }
+
+    /// <summary>
+    /// Dispose
+    /// </summary>
+    public void Dispose()
+    {
+        CloseFile();
+        GC.SuppressFinalize(this);
     }
 
     #region Encoding
