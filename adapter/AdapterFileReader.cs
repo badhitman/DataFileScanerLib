@@ -53,7 +53,7 @@ public class AdapterFileReader : IDisposable
     /// </summary>
     /// <param name="position">Точка от которой читать данные</param>
     /// <param name="sizeArea">Желаемый размер данных в каждом из направлений от точки (в начало и в конец)</param>
-    public Dictionary<ReadingDirection, byte[]> ReadDataAboutPosition(long position, int sizeArea) => new()
+    public Dictionary<ReadingDirection, byte[]> ReadDataAboutPosition(long position, uint sizeArea) => new()
     {
         { ReadingDirection.Left, ReadBaseBytes(position - sizeArea, position) },
         { ReadingDirection.Right, ReadBaseBytes(position, position + sizeArea) }
