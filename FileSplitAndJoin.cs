@@ -14,24 +14,24 @@ public class FileSplitAndJoin : AdapterFileWriter
     /// <summary>
     /// Из исходного файла создаёт новый(е) (не изменяя исходный) "нарезая" на указанные размеры файл(ы).
     /// </summary>
-    public void SplitFile(string DestinationFolder, long size, int DimensionGroup = 1)
+    public void SplitFile(string destinationFolder, long size, int dimensionGroup = 1)
     {
-        if (size < 1 || Length < size)
+        if (size < 1 || Length < size || FileFilteredReadStream is null)
             return;
 
         int part_file = 0;
         long StartPosition = 0;
         long EndPosition = FileFilteredReadStream.Length;
         string tmpl_new_file_names = Path.GetFileName(FileFilteredReadStream.Name);
-        while (StartPosition + size * DimensionGroup < EndPosition)
+        while (StartPosition + size * dimensionGroup < EndPosition)
         {
             part_file++;
-            CopyData(StartPosition, StartPosition + size * DimensionGroup, Path.Combine(DestinationFolder, tmpl_new_file_names + ".part_" + part_file.ToString(CultureInfo.CurrentCulture)));
-            StartPosition += size * DimensionGroup;
+            CopyData(StartPosition, StartPosition + size * dimensionGroup, Path.Combine(destinationFolder, tmpl_new_file_names + ".part_" + part_file.ToString(CultureInfo.CurrentCulture)));
+            StartPosition += size * dimensionGroup;
         }
 
         if (StartPosition < EndPosition)
-            CopyData(StartPosition, EndPosition, Path.Combine(DestinationFolder, tmpl_new_file_names + ".part_" + (part_file + 1).ToString(CultureInfo.CurrentCulture)));
+            CopyData(StartPosition, EndPosition, Path.Combine(destinationFolder, tmpl_new_file_names + ".part_" + (part_file + 1).ToString(CultureInfo.CurrentCulture)));
     }
 
     /// <summary>
@@ -40,7 +40,7 @@ public class FileSplitAndJoin : AdapterFileWriter
     public void SplitFile(string destinationFolder, int dimensionGroup = 1)
     {
         long[] entry_points = FindDataAll(0);
-        if (entry_points.Length == 0 || (entry_points.Length == 1 && entry_points[0] == 0))
+        if (entry_points.Length == 0 || (entry_points.Length == 1 && entry_points[0] == 0) || FileFilteredReadStream is null)
             return;
 
         if (dimensionGroup <= 0)

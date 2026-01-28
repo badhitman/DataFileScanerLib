@@ -14,7 +14,7 @@ public class AdapterFileReader
     /// <summary>
     /// Исходный файл
     /// </summary>
-    public required FilteredTextFileReader FileFilteredReadStream { get; set; }
+    public FilteredTextFileReader? FileFilteredReadStream { get; set; }
 
     /// <summary>
     /// Bytes to HEX
@@ -67,6 +67,9 @@ public class AdapterFileReader
     /// <returns>Возвращает массив байт из файла с произвольной точки до произвольной точки</returns>
     public byte[] ReadBaseBytes(long startPosition, long endPosition)
     {
+        if (FileFilteredReadStream is null)
+            return [];
+
         // Запоминаем позицию курсора в файле, что бы потом вернуть его на место
         long current_position_of_stream = Position;
         //
@@ -138,6 +141,7 @@ public class AdapterFileReader
     public void CloseFile()
     {
         FileFilteredReadStream?.Close();
+        FileFilteredReadStream = null;
     }
 
     #region Encoding
@@ -153,7 +157,7 @@ public class AdapterFileReader
     /// <returns>Указатель кодировки, определённой по строке имени</returns>
     public static Encoding DetectEncoding(string encodingName)
     {
-        return (encodingName?.ToLower(System.Globalization.CultureInfo.CurrentCulture)) switch
+        return (encodingName.ToLower()) switch
         {
             "utf8" => Encoding.UTF8,
             "ascii" => Encoding.ASCII,

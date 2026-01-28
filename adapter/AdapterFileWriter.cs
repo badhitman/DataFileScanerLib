@@ -34,6 +34,9 @@ public class AdapterFileWriter : AdapterFileScanner
     /// <param name="destinationFileName">Файл, в который нужно записать данные</param>
     public void CopyData(long StartPosition, long EndPosition, string destinationFileName)
     {
+        if (FileFilteredReadStream is null)
+            throw new Exception($"{nameof(FileFilteredReadStream)} не инициализирован");
+
         // Запоминаем позицию курсора в файле, что бы потом вернуть его на место
         long current_position_of_stream = Position;
         //

@@ -34,14 +34,17 @@ public class AdapterFileScanner : AdapterFileReader
     /// <summary>
     /// Find position data
     /// </summary>
-    public long FindPositionData(long StartPosition)
+    public long FindPositionData(long startPosition)
     {
+        if(FileFilteredReadStream is null)
+            throw new Exception($"{nameof(FileFilteredReadStream)} не инициализирован");
+
         if (Scanner.MinDataLengthBytes == 0)
             throw new Exception("Укажите данные поиска");
 
         TailBytes.Clear();
         Scanner.BufferBytes.Clear();
-        this.FileFilteredReadStream.Scanner.BufferBytes.Clear();
+        FileFilteredReadStream.Scanner.BufferBytes.Clear();
 
         long found_position = -1;
 
@@ -49,7 +52,7 @@ public class AdapterFileScanner : AdapterFileReader
 
         long file_length = Length;
 
-        long WorkingReadPosition = Position = StartPosition;
+        long WorkingReadPosition = Position = startPosition;
 
         while (WorkingReadPosition <= file_length || this.FileFilteredReadStream.Scanner.BufferBytes.Count > 0)
         {
@@ -71,18 +74,18 @@ public class AdapterFileScanner : AdapterFileReader
     /// <summary>
     /// Find data all
     /// </summary>
-    public long[] FindDataAll(long StartPosition)
+    public long[] FindDataAll(long startPosition)
     {
         List<long> indexes = [];
         while (true)
         {
-            long match_index_position = FindPositionData(StartPosition);
+            long match_index_position = FindPositionData(startPosition);
             if (match_index_position < 0)
                 break;
             else
             {
                 indexes.Add(match_index_position);
-                StartPosition += Scanner.ScanResult!.MatchUnit!.GetDetectedSearchData()!.Length;
+                startPosition += Scanner.ScanResult!.MatchUnit!.GetDetectedSearchData()!.Length;
             }
         }
         return [.. indexes];
