@@ -167,7 +167,7 @@ public class AdapterFileReader : IDisposable
     /// <returns>Указатель кодировки, определённой по строке имени</returns>
     public static Encoding DetectEncoding(string encodingName)
     {
-        return (encodingName.ToLower()) switch
+        return encodingName.ToLower() switch
         {
             "utf8" => Encoding.UTF8,
             "ascii" => Encoding.ASCII,
